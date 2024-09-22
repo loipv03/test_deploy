@@ -19,7 +19,7 @@ mongoose.connect(process.env.MONGODB_URI || '', {
 
 // Đường dẫn mẫu
 app.get('/', (req, res) => {
-    res.send('Hello World!');
+    res.send('Hello World! Hello World! Hello World! Hello World!');
 });
 
 // Khởi động server

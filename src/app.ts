@@ -1,30 +1,26 @@
-import express from 'express';
-import mongoose from 'mongoose';
+import express from 'express'
+import cors from 'cors'
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser'
+import connectDB from './config/database'
+import authRouter from './router/auth';
+import errorHandler from './middleware/errorMiddleware';
 
 dotenv.config();
 
-const app = express();
-const SERVER_PORT = process.env.SERVER_PORT || 3000;
+const MONGODB_URI: string = process.env.MONGODB_URI as string;
 
-app.use(express.json());
+const app = express()
 
-// Kết nối MongoDB
-mongoose.connect(process.env.MONGODB_URI || '', {
-    serverSelectionTimeoutMS: 5000,
-    socketTimeoutMS: 45000,
-})
-    .then(() => console.log('MongoDB connected'))
-    .catch(err => console.error('MongoDB connection error:', err));
+app.use(cookieParser());
 
-// Đường dẫn mẫu
-app.get('/', (req, res) => {
-    res.send('Hello World! Hello World! Hello World! Hello World!');
-});
+app.use(express.json())
+app.use(cors())
 
-// Khởi động server
-app.listen(SERVER_PORT, () => {
-    console.log(`Server is running on port ${SERVER_PORT}`);
-});
+app.use('/api', authRouter)
+
+app.use(errorHandler);
+
+connectDB(MONGODB_URI)
 
 export const viteNodeApp = app
